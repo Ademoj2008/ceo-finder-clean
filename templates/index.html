@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CEO Finder</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>CEO Finder</h1>
+    <p>Upload the file you want to process (each line should include an email). The app will insert CEO names above matching domains.</p>
+
+    {% if message %}
+    <p class="message">{{ message }}</p>
+    {% endif %}
+
+    <form action="/" method="POST" enctype="multipart/form-data">
+      <input type="file" name="file" accept=".txt,.csv" required>
+      <button type="submit">Upload & Process</button>
+    </form>
+
+    <p><a href="/upload_db">Upload database files</a></p>
+  </div>
+</body>
+</html>

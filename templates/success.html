@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Processed</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script>
+    window.onload = function() {
+      var a = document.getElementById('dl');
+      if (a) a.click();
+    };
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>✅ File Processed</h1>
+    <p>Your file is ready — download will begin automatically. If it does not, click the button below.</p>
+    <a id="dl" href="{{ download_url }}"><button>Download Processed File</button></a>
+    <p><a href="/">← Back to Home</a></p>
+  </div>
+</body>
+</html>

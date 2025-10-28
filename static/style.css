@@ -1,0 +1,7 @@
+body{font-family:system-ui,Segoe UI,Roboto,Arial;padding:24px;background:#ffffff;color:#111}
+.container{max-width:720px;margin:36px auto;background:#fff;padding:20px;border-radius:8px;border:1px solid #eee}
+h1{font-size:20px;margin-bottom:12px;color:#0b5ea8}
+input[type=file]{margin-bottom:12px}
+button{background:#0b5ea8;color:white;padding:8px 12px;border:none;border-radius:6px;cursor:pointer}
+a{color:#0b5ea8;text-decoration:none}
+.message{background:#eef6ff;padding:8px;border-left:4px solid #0b5ea8;border-radius:4px}

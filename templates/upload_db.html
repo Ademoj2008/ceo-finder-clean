@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Upload Database Files</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Upload CEO Database</h1>
+    {% if message %}
+    <p class="message">{{ message }}</p>
+    {% endif %}
+    <form action="/upload_db" method="POST" enctype="multipart/form-data">
+      <input type="file" name="db_file" accept=".txt,.csv" required>
+      <button type="submit">Upload Database File</button>
+    </form>
+    <p><a href="/">← Back</a></p>
+  </div>
+</body>
+</html>
