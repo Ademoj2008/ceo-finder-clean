@@ -18,11 +18,18 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXT
 
 def build_email_ceo_mapping(database_folder=DATABASE):
+    print("✅ Using robust build_email_ceo_mapping function")
+    """
+    Build a mapping of company emails to CEO names safely.
+    Skips malformed lines without crashing.
+    """
     mapping = {}
     try:
         files = [f for f in os.listdir(database_folder) if os.path.isfile(os.path.join(database_folder, f))]
-    except Exception:
+    except Exception as e:
+        print(f"Error accessing folder {database_folder}: {e}")
         return mapping
+
     for fname in files:
         if not fname.lower().endswith(('.txt', '.csv')):
             continue
@@ -30,20 +37,32 @@ def build_email_ceo_mapping(database_folder=DATABASE):
         try:
             with open(path, 'r', encoding='utf-8', errors='ignore') as fh:
                 raw_lines = [ln.rstrip('\n') for ln in fh.readlines()]
-        except Exception:
+        except Exception as e:
+            print(f"Error reading file {fname}: {e}")
             continue
+
         current_ceo = None
-        for ln in raw_lines:
-            if not ln or not ln.strip():
+        for idx, ln in enumerate(raw_lines, start=1):
+            line = ln.strip()
+            if not line:
                 continue
-            s = ln.strip()
-            if '@' not in s:
-                current_ceo = s
-            else:
-                parts = s.split('@', 1)
-                if len(parts) == 2 and current_ceo:
-                    domain = parts[1].split()[0].strip().lower()
-                    mapping[domain] = current_ceo
+
+            if '@' not in line:
+                current_ceo = line  # update CEO name
+                continue
+
+            parts = line.split('@', 1)
+            if len(parts) < 2 or not current_ceo:
+                print(f"Skipping malformed line {idx} in {fname}: '{line}'")
+                continue
+
+            try:
+                domain = parts[1].split()[0].strip().lower()
+                mapping[domain] = current_ceo.strip()
+            except Exception as e:
+                print(f"Error processing line {idx} in {fname}: '{line}' - {e}")
+                continue
+
     return mapping
 
 # initial mapping loaded at startup
@@ -123,3 +142,4 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 10000))
     app.run(host='0.0.0.0', port=port)
+
