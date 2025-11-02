@@ -88,40 +88,34 @@ def process_file_route():
     except Exception:
         return render_template('index.html', message='Failed to read uploaded file')
 
-    output_lines = []
-for i, line in enumerate(lines):
-    stripped = line.strip()
-    if not stripped:
-        # Preserve blank lines from the input
-        if output_lines and output_lines[-1] != '':
+        output_lines = []
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
             output_lines.append('')
-        continue
+            continue
 
-    ceo = None
-    if '@' in stripped:
-        domain = stripped.split('@', 1)[1].split()[0].lower()
-        ceo = email_to_ceo.get(domain)
+        found_ceo = False
+        for company, ceo in ceo_data.items():
+            if company.lower() in stripped.lower():
+                output_lines.append(ceo)
+                output_lines.append(stripped)
+                output_lines.append('')
+                found_ceo = True
+                break
 
-    if ceo:
-        # Insert CEO name right above company line, no extra blank line
-        if output_lines and output_lines[-1] != '':
-            output_lines.append('')  # single blank line separation
-        output_lines.append(ceo)
+        if not found_ceo:
+            output_lines.append(stripped)
+            output_lines.append('')
 
-    output_lines.append(line.rstrip())
+    out_name = f'with_ceos_{filename}'
+    out_path = os.path.join(OUTPUT, out_name)
+    with open(out_path, 'w', encoding='utf-8') as fh:
+        fh.write('\n'.join(output_lines) + '\n')
 
-# ensure final file ends with exactly one newline
-while len(output_lines) > 1 and output_lines[-1] == '' and output_lines[-2] == '':
-    output_lines.pop()
+    download_url = url_for('download_file', filename=out_name)
+    return render_template('success.html', download_url=download_url)
 
-
-            out_name = f'with_ceos_{filename}'
-            out_path = os.path.join(OUTPUT, out_name)
-            with open(out_path, 'w', encoding='utf-8') as fh:
-                fh.write('\n'.join(output_lines) + '\n')
-
-            download_url = url_for('download_file', filename=out_name)
-            return render_template('success.html', download_url=download_url)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
