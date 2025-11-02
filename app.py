@@ -96,7 +96,7 @@ def process_file_route():
             continue
 
         found_ceo = False
-        for company, ceo in ceo_data.items():
+        for company, ceo in email_to_ceo.items():
             if company.lower() in stripped.lower():
                 output_lines.append(ceo)
                 output_lines.append(stripped)
