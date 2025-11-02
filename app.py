@@ -115,13 +115,13 @@ while len(output_lines) > 1 and output_lines[-1] == '' and output_lines[-2] == '
     output_lines.pop()
 
 
-    out_name = f'with_ceos_{filename}'
-    out_path = os.path.join(OUTPUT, out_name)
-    with open(out_path, 'w', encoding='utf-8') as fh:
-        fh.write('\n'.join(output_lines) + '\n')
+        out_name = f'with_ceos_{filename}'
+        out_path = os.path.join(OUTPUT, out_name)
+        with open(out_path, 'w', encoding='utf-8') as fh:
+            fh.write('\n'.join(output_lines) + '\n')
 
-    download_url = url_for('download_file', filename=out_name)
-    return render_template('success.html', download_url=download_url)
+        download_url = url_for('download_file', filename=out_name)
+        return render_template('success.html', download_url=download_url)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
