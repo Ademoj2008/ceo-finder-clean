@@ -89,18 +89,31 @@ def process_file_route():
         return render_template('index.html', message='Failed to read uploaded file')
 
     output_lines = []
-    for line in lines:
-        stripped = line.strip()
-        if not stripped:
+for i, line in enumerate(lines):
+    stripped = line.strip()
+    if not stripped:
+        # Preserve blank lines from the input
+        if output_lines and output_lines[-1] != '':
             output_lines.append('')
-            continue
-        ceo = None
-        if '@' in stripped:
-            domain = stripped.split('@', 1)[1].split()[0].lower()
-            ceo = email_to_ceo.get(domain)
-        if ceo:
-            output_lines.append(ceo)
-        output_lines.append(line.rstrip())
+        continue
+
+    ceo = None
+    if '@' in stripped:
+        domain = stripped.split('@', 1)[1].split()[0].lower()
+        ceo = email_to_ceo.get(domain)
+
+    if ceo:
+        # Insert CEO name right above company line, no extra blank line
+        if output_lines and output_lines[-1] != '':
+            output_lines.append('')  # single blank line separation
+        output_lines.append(ceo)
+
+    output_lines.append(line.rstrip())
+
+# ensure final file ends with exactly one newline
+while len(output_lines) > 1 and output_lines[-1] == '' and output_lines[-2] == '':
+    output_lines.pop()
+
 
     out_name = f'with_ceos_{filename}'
     out_path = os.path.join(OUTPUT, out_name)
