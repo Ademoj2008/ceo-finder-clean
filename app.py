@@ -88,25 +88,24 @@ def process_file_route():
     except Exception:
         return render_template('index.html', message='Failed to read uploaded file')
 
-        output_lines = []
+    # ✅ define output_lines before using it
+    output_lines = []
+
     for line in lines:
         stripped = line.strip()
         if not stripped:
-            output_lines.append('')
+            output_lines.append('')  # preserve blank lines
             continue
 
-        found_ceo = False
-        for company, ceo in email_to_ceo.items():
-            if company.lower() in stripped.lower():
-                output_lines.append(ceo)
-                output_lines.append(stripped)
-                output_lines.append('')
-                found_ceo = True
-                break
+        ceo = None
+        if '@' in stripped:
+            domain = stripped.split('@', 1)[1].split()[0].lower()
+            ceo = email_to_ceo.get(domain)
 
-        if not found_ceo:
-            output_lines.append(stripped)
-            output_lines.append('')
+        # ✅ add CEO name (if found) directly above the company line
+        if ceo:
+            output_lines.append(ceo)
+        output_lines.append(line.rstrip())
 
     out_name = f'with_ceos_{filename}'
     out_path = os.path.join(OUTPUT, out_name)
